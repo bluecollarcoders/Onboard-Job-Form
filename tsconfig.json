@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@my-app/shared": ["./shared/index.ts"]
+    }
+  },
+  "references": [
+    { "path": "./shared" },
+    { "path": "./frontend" },
+    { "path": "./backend" }
+  ]
+}

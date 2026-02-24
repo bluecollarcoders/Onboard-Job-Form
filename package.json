@@ -1,0 +1,25 @@
+{
+  "name": "my-monorepo",
+  "private": "true",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "version": "1.0.0",
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "index.js",
+ 
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
+    "build": "npm run build --workspaces --if-present"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

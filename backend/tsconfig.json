@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@my-app/shared": ["../shared/index.ts"]
+    },
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*", "../shared/index.ts"],
+  "references": [
+    { "path": "../shared" }
+  ]
+}
