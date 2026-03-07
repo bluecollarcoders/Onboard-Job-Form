@@ -9,10 +9,110 @@ datasource db {
   provider = "sqlite"
 }
 
-model Contact { 
-  id      Int      @id @default(autoincrement()) 
-  name   String?   
-  email  String
-  message String      
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum UserRole {
+  ADMIN
+  RECRUITER
+  CANDIDATE
+}
+
+enum ApplicationStatus {
+  SUBMITTED
+  RECEIVED
+  SCREENING
+  INTERVIEWING
+  OFFER_EXTENDED
+  HIRED
+  REJECTED
+}
+
+enum OnboardingStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+// ==========================================
+// MODELS
+// ==========================================
+
+model User { 
+  id       String @id @default(cuid()) // or uuid()
+  email    String @unique
+  name     String?   
+  role     UserRole @default(CANDIDATE)
+  onboardingStatus OnboardingStatus @default(NOT_STARTED)
+
+  //Relationships
+  applications     Application[]
+  postedJobs       Job[]  @relation("JOBPOSTER")
+  statusChanges    ApplicationStatusEvent[] 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Job {
+  id          String  @id @default(cuid())
+  title       String
+  company     String
+  location    String?
+  salary      String?
+  description String
+  isActive    Boolean @default(true)
+
+  // Foreign Keys
+  postedById   String
+  postedBy   User @relation( "JOBPOSTER", fields: [postedById], references: [id])
+
+  applications Application[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Indexes for common search patterns
+  @@index([postedById])
+  @@index([company]) // For "Jobs at Company X" searches
+  @@index([location]) // For "Jobs in Location Y" searches
+}
+
+model Application {
+  id           String      @id @default(cuid())
+  status       ApplicationStatus @default(SUBMITTED)
+  coverLetter  String?
+  resumeUrl    String? // Link to S3/Cloudinary/etc.
+  notes        String?  // Internal notes for recruiters
+  userId       String
+  user         User  @relation(fields: [userId], references: [id])
+  jobId        String
+  job          Job   @relation(fields: [jobId], references: [id])
+  statusHistory ApplicationStatusEvent[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Business RULE: Prevent applying to the same job twice
+  @@unique([userId, jobId])
+
+  @@index([status]) // Show me all pending applications
+  @@index([userId]) // Get my applications performance
+  @@index([jobId])  // Get all applications for a job performance
+}
+
+model ApplicationStatusEvent {
+  id String     @id @default(cuid())
+  applicationId String
+  application   Application  @relation(fields: [applicationId], references:[id])
+  
+  fromStatus ApplicationStatus?
+  toStatus   ApplicationStatus
+
+  // Who performed the action? (The Recruiter)
+  changedById String?
+  changedBy    User?  @relation(fields: [changedById], references: [id])
+
+  createdAt   DateTime  @default(now())
+
+  @@index([applicationId])
 }
