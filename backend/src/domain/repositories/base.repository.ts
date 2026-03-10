@@ -1,20 +1,20 @@
 //  This defines the shape that any Prisma model delegate must follow.
-export interface BaseDelegate<T, CreateInput, UpdateInput, WhereInput>{
-    findUnique(args: { where: { id: string } }): Promise<T | null>;
+export interface BaseDelegate<T, CreateInput, UpdateInput, UniqueInput, WhereInput>{
+    findUnique(args: { where: UniqueInput }): Promise<T | null>;
     findMany(args?: { where?: WhereInput; take?: number; skip?: number }): Promise<T[]>;
     create(args: { data: CreateInput }): Promise<T>;
-    update(args: {where: { id: string }; data: UpdateInput }): Promise<T>
-    delete(args: {where: {id: string } }): Promise<T>;
+    update(args: {where: UniqueInput; data: UpdateInput }): Promise<T>
+    delete(args: {where: UniqueInput }): Promise<T>;
 }
 
-export abstract class AbstractBaseRepository<T, CreateInput, UpdateInput, WhereInput> {
+export abstract class AbstractBaseRepository<T, CreateInput,UpdateInput, UniqueInput extends { id?: string }, WhereInput> {
 
     constructor(
-        protected modelDelegate: BaseDelegate<T, CreateInput, UpdateInput, WhereInput>
+        protected modelDelegate: BaseDelegate<T, CreateInput, UpdateInput, UniqueInput, WhereInput>
     ) {}
 
     async findById(id: string): Promise<T | null> {
-        return this.modelDelegate.findUnique( { where: { id } } );
+        return this.modelDelegate.findUnique( { where: { id } as UniqueInput } );
     }
 
     async findMany(where?: WhereInput): Promise<T[]> {
@@ -27,12 +27,13 @@ export abstract class AbstractBaseRepository<T, CreateInput, UpdateInput, WhereI
 
     async update(id: string, data: UpdateInput): Promise<T> {
         return this.modelDelegate.update({
-            where: { id },
+            where: { id } as UniqueInput,
             data,
         });
     }
 
     async delete(id: string): Promise<T> {
-        return this.modelDelegate.delete({ where: { id } });
+        return this.modelDelegate.delete({ where: { id } as UniqueInput });
     }
+    
 }
