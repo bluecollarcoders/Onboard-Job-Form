@@ -1,5 +1,5 @@
 import { PrismaClient, User, Prisma } from "@prisma/client";
-import { AbstractBaseRepository } from "src/domain/repositories/base.repository.js";
+import { AbstractBaseRepository, BaseDelegate } from "src/domain/repositories/base.repository.js";
 import { UserRepository } from "src/domain/repositories/user.repository.js";
 
 export class PrismaUserRepository 
@@ -8,13 +8,22 @@ export class PrismaUserRepository
     Prisma.UserCreateInput,
     Prisma.UserUpdateInput,
     Prisma.UserWhereUniqueInput,
-    Prisma.UserWhereInput
+    Prisma.UserWhereInput,
+    Prisma.UserFindUniqueArgs
+    
     >
     implements UserRepository
 {
 
     constructor(prisma: PrismaClient) {
-        super(prisma.user);
+        super(prisma.user as unknown as BaseDelegate<
+        User,
+        Prisma.UserCreateInput,
+        Prisma.UserUpdateInput,
+        Prisma.UserWhereUniqueInput,
+        Prisma.UserWhereInput,
+        Prisma.UserFindUniqueArgs
+        >);
     }
 
     // Only UNIQUE to Users.
