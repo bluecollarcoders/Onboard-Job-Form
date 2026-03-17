@@ -1,5 +1,4 @@
-import "dotenv/config";
-import { prisma } from "..//src/infrastructure/database/prisma.client";
+import { prisma } from "@infrastructure/database/prisma.client.js";
 
 async function main() {
     console.log('🌱 Starting seed...');
