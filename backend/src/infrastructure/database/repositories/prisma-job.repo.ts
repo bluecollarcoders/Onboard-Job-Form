@@ -1,6 +1,6 @@
 import { PrismaClient, Job, Prisma } from "@prisma/client";
-import { AbstractBaseRepository, BaseDelegate } from "src/domain/repositories/base.repository.js";
-import { JobRepository } from "src/domain/repositories/job.repository.js";
+import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
+import { JobRepository } from "@domain/repositories/job.repository.js";
 
 export class PrismaJobRepository
     extends AbstractBaseRepository<

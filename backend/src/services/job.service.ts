@@ -1,5 +1,6 @@
 import { Job, Prisma } from "@prisma/client";
-import { JobRepository } from "src/domain/repositories/job.repository.js";
+import { JobRepository } from "@domain/repositories/job.repository.js";
+import { JobNotFound } from "@domain/error/application.errors.js";
 
 export class Jobservice {
 
@@ -13,7 +14,7 @@ export class Jobservice {
     async getJobDetails(id: string): Promise<Job | null> {
         const job = await this.jobRepo.findById(id);
 
-        if (!job) throw new Error("Job not found");
+        if (!job) throw new JobNotFound();
         
         return job;
     }
