@@ -1,6 +1,6 @@
 import { PrismaClient, Application, Prisma } from "@prisma/client";
-import { AbstractBaseRepository, BaseDelegate } from "src/domain/repositories/base.repository.js";
-import { ApplicationRepository } from "src/domain/repositories/application.repository.js";
+import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
+import { ApplicationRepository } from "@domain/repositories/application.repository.js";
 
 export class PrismaApplicationRepository
     extends AbstractBaseRepository<
@@ -21,11 +21,11 @@ export class PrismaApplicationRepository
                 Prisma.ApplicationWhereUniqueInput,
                 Prisma.ApplicationWhereInput,
                 Prisma.ApplicationFindUniqueArgs
-                >);
+            >);
         }
 
     
-async findByUserAndJob(userId: string, jobId: string): Promise<Application | null> {
+    async findByUserAndJob(userId: string, jobId: string): Promise<Application | null> {
         return this.modelDelegate.findUnique({
             where: {
                 userId_jobId: { userId, jobId } 

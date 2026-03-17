@@ -7,7 +7,11 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@my-app/shared": ["../shared/index.ts"]
+      "@my-app/shared": ["../shared/index.ts"],
+      "@domain/*": ["src/domain/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@services/*": ["src/services/*"],
+      "@errors/*": ["src/domain/error/*"]
     },
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
