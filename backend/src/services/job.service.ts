@@ -1,8 +1,8 @@
 import { Job, Prisma } from "@prisma/client";
-import { JobRepository } from "@domain/repositories/job.repository.js";
-import { JobNotFound } from "@domain/error/application.errors.js";
+import { JobRepository } from "@domain/job/job.repository.js";
+import { JobNotFound } from "@errors/application.errors.js";
 
-export class Jobservice {
+export class JobService {
 
     // Inject the INTERFACE.
     constructor(private jobRepo: JobRepository) {}

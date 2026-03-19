@@ -1,6 +1,6 @@
 import { PrismaClient, Application, Prisma } from "@prisma/client";
 import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
-import { ApplicationRepository } from "@domain/repositories/application.repository.js";
+import { ApplicationRepository } from "@domain/application/application.repository.js";
 
 export class PrismaApplicationRepository
     extends AbstractBaseRepository<
