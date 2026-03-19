@@ -1,6 +1,6 @@
 import { PrismaClient, User, Prisma } from "@prisma/client";
 import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
-import { UserRepository } from "@domain/repositories/user.repository.js";
+import { UserRepository } from "@domain/user/user.repository.js";
 
 export class PrismaUserRepository 
     extends AbstractBaseRepository<
@@ -32,5 +32,4 @@ export class PrismaUserRepository
             where: { email }
         });
     }
-    
 }

@@ -1,13 +1,8 @@
 import { Application } from "@prisma/client";
-import { ApplicationRepository } from "@domain/repositories/application.repository.js";
-import { JobRepository } from "@domain/repositories/job.repository.js"; 
+import { ApplicationRepository } from "@domain/application/application.repository.js";
+import { CreateApplicationDTO } from "@domain/application/application.schema.js";
+import { JobRepository } from "@domain/job/job.repository.js"; 
 import { AlreadyAppliedError, JobClosedError, JobNotFound } from "@errors/application.errors.js";
-
-interface CreateApplicationDTO {
-    userId: string;
-    jobId: string;
-    coverLetter?: string;
-}
 
 export class ApplicationService {
     constructor(
