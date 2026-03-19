@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import type { NextFunction } from "express";
-import { Jobservice } from "@services/job.service.js";
+import { JobService } from "@services/job.service.js";
 
 export class JobController {
-    constructor(private jobService: Jobservice) {}
+    constructor(private jobService: JobService) {}
     
      getAllJobs = async  (req: Request, res: Response, next: NextFunction) => {
         try {
