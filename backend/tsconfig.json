@@ -16,7 +16,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "../shared/index.ts"],
+  "include": ["src/**/*", "../shared/index.ts", "../shared/src/user.schema.ts", "../shared/src/job.schema.ts", "../shared/src/application.schema.ts"],
   "references": [
     { "path": "../shared" }
   ]
