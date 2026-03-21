@@ -1,6 +1,7 @@
 import { Job, Prisma } from "@prisma/client";
 import { JobRepository } from "@domain/job/job.repository.js";
 import { JobNotFound } from "@errors/application.errors.js";
+import { CreateJobDTO } from "@my-app/shared";
 
 export class JobService {
 
@@ -19,11 +20,18 @@ export class JobService {
         return job;
     }
 
-    async postNewJob(data: Prisma.JobCreateInput): Promise<Job> {
+    async postNewJob(data: CreateJobDTO): Promise<Job> {
         // Business Rule: We make all new jobs to start as 'active'.
         return this.jobRepo.create({
-            ...data,
-            isActive: true
+            title: data.title,
+            company: data.company,
+            description: data.description,
+            location: data.location,
+            salary: data.salary,
+            isActive: true,
+            postedBy: {
+                connect: { id: data.postedById }
+            }
         });
     }
 }
