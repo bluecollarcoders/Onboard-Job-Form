@@ -1,92 +1,85 @@
-# 🏗️ Week 3: Production Readiness & Scale (Enterprise SaaS)
+# 🏗️ Week 3: Full-Stack Integration & Enterprise Scale
 
-## 🎯 Mission: Transform CRUD into a Scalable Enterprise Product
+## 🎯 Mission: Bridge the Gap and Build for Scale
 
 **Duration:** 7 Days (March 23-29, 2026)
-**Focus:** Database performance, API optimization, and robust UX.
-**Success Metric:** A system that remains performant with 10,000+ records and provides a professional UI/UX.
+**Focus:** Connecting the React frontend to the PostgreSQL backend while implementing production-grade performance patterns.
+**Success Metric:** A working UI that displays paginated job listings and allows real-time application submissions.
 
 ---
 
 ## 📋 Week 3 Checklist
 
-### Days 1-2: Database Performance & Indexing ⚡
-**Goal:** Prevent query degradation as the database grows.
+### Days 1-2: Frontend Connectivity & Data Fetching 🔗
+**Goal:** Replace mock logic with real API communication.
 
-- [ ] Analyze Prisma query logs to identify slow queries.
-- [ ] Implement Database Indexes in `schema.prisma` for:
-  - `idx_jobs_location`
-  - `idx_jobs_company`
-  - `idx_applications_status`
-  - `idx_applications_user_job` (Composite index)
-- [ ] Explain the trade-offs of indexing (Read vs. Write performance) in your dev notes.
+- [ ] Update `ContactForm.tsx` to hit the real `POST /api/applications/apply` endpoint.
+- [ ] Implement a `JobService` on the frontend (using `fetch` or `axios`) to centralize API calls.
+- [ ] Build the `JobList` component to fetch and display data from `GET /api/jobs`.
+- [ ] Map backend domain errors (e.g., `ALREADY_APPLIED`) to user-friendly UI alerts.
 
-### Days 3-4: Advanced API Patterns (The "Senior" Suite)
-**Goal:** Build APIs that handle large datasets gracefully.
-
-- [ ] Implement **Offset-based Pagination** for the `getAllJobs` endpoint (`?page=1&limit=10`).
-- [ ] Add **Filtering and Sorting** logic:
-  - `GET /api/jobs?location=remote&sort=createdAt:desc`
-- [ ] Standardize API Responses (e.g., `{ data: [], meta: { total, page, limit } }`).
-- [ ] Implement **Rate Limiting** using `express-rate-limit` to protect against brute force.
-
-### Day 5: Frontend UX & Error Boundaries
-**Goal:** Build a "Bulletproof" user interface.
+### Days 3-4: UI/UX Professionalism 🎨
+**Goal:** Build a "Bulletproof" interface that feels like an enterprise SaaS.
 
 - [ ] Implement **Loading States** and **Skeletons** for the Job List.
-- [ ] Add **React Error Boundaries** to catch and display UI crashes gracefully.
-- [ ] Integrate **React Toast** notifications for form submissions (Success/Error).
-- [ ] Ensure the frontend correctly parses and displays the custom backend error codes (`JOB_CLOSED`, `ALREADY_APPLIED`).
+- [ ] Add **React Error Boundaries** to handle API failures gracefully.
+- [ ] Integrate **React Toast** for immediate feedback on form actions.
+- [ ] Handle "Empty States" (e.g., "No jobs found matching your criteria").
 
-### Day 6: API Documentation & Observability 🛡️
-**Goal:** Make the system discoverable and debuggable.
+### Days 5-6: Enterprise Power-Up (Pagination & Indexing) ⚡
+**Goal:** Ensure the system scales as data grows.
 
-- [ ] Generate basic API documentation (using Swagger/OpenAPI or a clean `API.md`).
-- [ ] Set up basic **logging middleware** (e.g., `winston` or `pino`) to track production errors.
+- [ ] **Backend:** Implement **Offset-based Pagination** in the `getAllJobs` service and controller (`?page=1&limit=10`).
+- [ ] **Database:** Add Indexes in `schema.prisma` for high-traffic search columns:
+  - `idx_jobs_location`
+  - `idx_jobs_title`
+  - `idx_applications_user_job`
+- [ ] **Frontend:** Build a "Pagination" component (Next/Previous) to control the list view.
 
-### Day 7: The "Senior" Review
-**Goal:** Code cleanup and optimization.
+### Day 7: End-to-End Validation & Filtering 🧪
+**Goal:** Prove the "Hybrid" search works.
 
-- [ ] Refactor any complex controller logic back into the Service Layer.
-- [ ] Finalize the "Production Fundamentals" section of your portfolio blog post.
+- [ ] Add a basic **Filter Bar** (e.g., filter by location) that updates the URL and fetches new data.
+- [ ] Perform a full E2E test: Post a Job -> See it in List -> Apply as a User -> Verify in DB.
+- [ ] Update documentation with "Week 3 Architecture Decisions."
 
 ---
 
 ## 🎯 Architectural Patterns
 
-**1. Pagination Strategy:**
-Avoid `count()` on every request for huge tables. Learn how to return metadata efficiently.
+**1. The "Single Source of Truth" UI:**
+Ensure your React components are "dumb" and your frontend service/hook layer handles the "smart" logic of talking to the backend.
 
-**2. Indexing Strategy:**
-Learn why indexing `Boolean` columns (like `isActive`) is often useless, but indexing `String` columns used in `WHERE` clauses is critical.
+**2. Query Optimization:**
+Learn to use Prisma's `skip` and `take` for pagination, and understand how database indexes turn O(n) searches into O(log n).
 
 ---
 
-## 🏗️ Technical Stack (Refined)
+## 🏗️ Technical Stack (Current)
 
-- **Backend:** Express + Prisma + pg (Postgres)
-- **Security:** Express-Rate-Limit + Helmet.js
 - **Frontend:** React + TailwindCSS
-- **Documentation:** OpenAPI/Swagger
+- **State Management:** React Hooks (useState, useEffect)
+- **Backend:** Express + Prisma + PostgreSQL
+- **Validation:** Zod (Shared between layers)
 
 ---
 
 ## 💪 Success Criteria for Week 3
 
-### Performance
-- [ ] Paginated queries return in < 50ms.
-- [ ] No "Full Table Scans" on job searches.
+### Integration
+- [ ] The entire "Job Search -> Apply" flow works without manual database entry.
+- [ ] API metadata (total count, page) is correctly displayed in the UI.
 
-### Quality
-- [ ] Frontend handles "Offline" or "Server Down" states without a white screen.
-- [ ] API follows strict REST conventions.
+### Performance
+- [ ] Initial page load returns data in < 100ms.
+- [ ] No "Full Table Scans" reported in Postgres logs for job searches.
 
 ---
 
 ## 🚀 Ready to Start?
 
-**Your first task:** Add the database indexes to your `schema.prisma` and run a migration.
+**Your first task:** Update `ContactForm.tsx` to use the new shared `CreateApplicationDTO` and hit the live backend.
 
-**Coach's expectation:** By the end of this week, you will have a "Production-Grade" application. You will be able to prove to an interviewer that you build for **scale** and **users**, not just for "cool tech."
+**Coach's expectation:** By the end of this week, you will have a **Full-Stack Portfolio Piece.** You won't just have code; you'll have a product that handles scale like a senior engineer.
 
-**Let's build for the real world! 🐘🔥**
+**Let's bridge the gap! 🌉🔥**

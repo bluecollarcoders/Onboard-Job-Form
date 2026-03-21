@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { JobController } from "../controllers/job.controller.js";
 import { validate } from "../middleware/validate.middleware.js";
+import { CreateJobSchema } from "@my-app/shared";
 
-export const createJobRouter = (JobController: JobController) => {
+export const createJobRouter = (jobController: JobController) => {
     const router = Router();
 
-    router.get('/', JobController.getAllJobs);
-    router.get('/:id', JobController.getJobId);
+    router.get('/', jobController.getAllJobs);
+    router.get('/:id', jobController.getJobId);
+    router.post('/', validate(CreateJobSchema), jobController.create);
     
     return router;
 }

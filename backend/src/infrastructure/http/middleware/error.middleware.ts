@@ -7,7 +7,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
 
     if (err instanceof ZodError) {
         return res.status(400).json({
-            error: 'VALIDATION_ERROR',
+            error: 'VALIDATION_ERROR', 
             message: 'Input validation failed',
             details: err.issues.map((issue) => ({
                 path: issue.path.join('.'),
