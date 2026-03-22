@@ -73,3 +73,156 @@ Learn how to update the candidate's status in the UI *immediately* before the AP
 **Coach's expectation:** By the end of this week, you will have a **Product** you can actually demo. This is the moment your portfolio becomes "Senior."
 
 **Let's build the Dashboard! 📊🔥**
+
+**Frontend Lead AI Coach Notes**
+
+  ✅ What You Already Have (Week 2 Complete)
+
+  API Endpoints:
+  // These work perfectly for the dashboard
+  GET  /api/jobs              // Jobs table view
+  GET  /api/jobs/:id          // Job details
+  POST /api/applications      // Application submission
+
+  Data Models:
+  // Your Prisma schema is perfect
+  enum ApplicationStatus {
+    SUBMITTED, RECEIVED, SCREENING,
+    INTERVIEWING, OFFER_EXTENDED, HIRED, REJECTED
+  }
+
+  model ApplicationStatusEvent {
+    // Perfect for audit trail
+    fromStatus, toStatus, changedAt, changedById
+  }
+
+  Domain Architecture:
+  // Your DDD structure is ideal
+  ApplicationService.applyForJob()     // ✅ Business logic
+  Custom error classes (JobNotFound)   // ✅ Error handling
+  Zod validation                       // ✅ Type safety
+
+  🔧 What You Need to ADD (Not Refactor)
+
+  You only need to extend your existing backend with these endpoints:
+```
+  // backend/src/infrastructure/http/routes/application.routes.ts
+  // Add these routes to your existing router
+
+  router.get('/applications/job/:jobId', applicationController.getByJob);
+  router.patch('/applications/:id/status', applicationController.updateStatus);
+  router.get('/applications/:id/history', applicationController.getHistory);
+
+  New controller methods (extend existing controller):
+  // backend/src/infrastructure/http/controllers/application.controller.ts
+
+  export class ApplicationController {
+    // Your existing methods stay untouched
+
+    // Add these new methods:
+    getApplicationsByJob = async (req: Request, res: Response, next: NextFunction) => {
+      // Use existing ApplicationService
+    };
+
+    updateApplicationStatus = async (req: Request, res: Response, next: NextFunction) => {
+      // Use existing ApplicationService + add status update logic
+    };
+  }
+```
+
+  📋 Exact Implementation Plan (Matches Your Week 3)
+
+  Days 1-2: API Extensions (30 minutes work)
+
+  Add these to your existing ApplicationService:
+  // backend/src/services/application.service.ts
+  export class ApplicationService {
+    // Your existing methods stay unchanged
+
+    // Add these:
+    async getApplicationsByJob(jobId: string): Promise<Application[]> {
+      return this.appRepo.findByJobId(jobId);
+    }
+
+    async updateApplicationStatus(
+      applicationId: string,
+      newStatus: ApplicationStatus
+    ): Promise<Application> {
+      // Business logic + create status history event
+      const app = await this.appRepo.findById(applicationId);
+      if (!app) throw new ApplicationNotFound();
+
+      // Create history event
+      await this.createStatusEvent(applicationId, app.status, newStatus);
+
+      // Update status
+      return this.appRepo.update(applicationId, { status: newStatus });
+    }
+  }
+
+  Days 3-5: Frontend Dashboard (Your Learning Focus)
+
+  This is where you'll learn deep React patterns:
+
+  // frontend/src/hooks/useApplications.ts - Learn React Query
+  export const useApplications = (jobId: string) => {
+    return useQuery({
+      queryKey: ['applications', jobId],
+      queryFn: () => fetchApplications(jobId),
+      refetchInterval: 30000, // Poll every 30 seconds
+    });
+  };
+
+  // frontend/src/hooks/useDragAndDrop.ts - Learn complex state management
+  export const useDragAndDrop = () => {
+    // Complex state logic for drag operations
+    // Perfect for learning useState, useCallback, useRef patterns
+  };
+
+  // frontend/src/components/KanbanBoard.tsx - Learn component composition
+  export const KanbanBoard = ({ jobId }: { jobId: string }) => {
+    // Smart component orchestrating dumb components
+    // Perfect for learning props/callback patterns
+  };
+
+  🧠 Deep Learning Opportunities
+
+  This dashboard will teach you:
+
+  React Patterns:
+
+  - Smart/Dumb components (data vs presentation)
+  - Custom hooks (reusable stateful logic)
+  - Context for theming (dark/light mode)
+  - Error boundaries (graceful failure handling)
+  - Optimistic updates (UX responsiveness)
+
+  TypeScript Mastery:
+
+  - Generic hooks (useMutation<T>)
+  - Discriminated unions (ApplicationStatus)
+  - Interface composition (extending base props)
+  - Type guards (runtime type checking)
+
+  Advanced UX Patterns:
+
+  - Skeleton loading (perceived performance)
+  - Toast notifications (user feedback)
+  - Drag and drop (complex interactions)
+  - Keyboard navigation (accessibility)
+
+  💡 Intuitive UX = Impressive Interactions
+
+  Your instinct is correct! Here's what makes it intuitive:
+
+  Immediate Feedback Patterns:
+  // When user drags a card:
+  1. Card lifts with shadow (immediate visual feedback)
+  2. Column highlights as valid drop zone (guidance)
+  3. Card snaps to position (satisfying interaction)
+  4. Status updates instantly (optimistic update)
+  5. Toast confirms action (completion feedback)
+
+  Progressive Disclosure:
+  Jobs Table → Click → Pipeline View → Click Card → Detail Panel
+  (Simple)      (Focused)    (Rich)       (Complete)

@@ -31,16 +31,33 @@
 - [ ] **Status Badges:** Display the current status (`SUBMITTED`, `INTERVIEWING`, etc.) with different colors.
 - [ ] **Historical View:** Allow the candidate to click an application and see its basic timeline.
 
-### Day 6: Responsive UI & Polish 📱
-**Goal:** Ensure the app works on all devices.
+### Day 6: Enhanced Candidate Profile & Basic Features 📱🎨
+**Goal:** Add professional candidate profiles and basic portfolio functionality.
 
-- [ ] **Mobile Optimization:** Ensure the Job Board and Dashboard are responsive using Tailwind.
-- [ ] **Navigation Refactor:** Add a Navbar with links to "Browse Jobs," "My Applications," and "Profile."
+- [ ] **Schema Update:** Add core profile fields to User and Job models
+  - User: `avatarUrl`, `companyName`, `companyLogo`, `phoneNumber`, `portfolioUrl`
+  - Job: `companyLogo` for branding consistency
+- [ ] **Image Upload Service:** Implement file upload with Cloudinary (production-grade image handling)
+- [ ] **Enhanced Candidate Profile:** Build comprehensive candidate detail panel
+  - Contact information (phone, portfolio URL)
+  - Basic portfolio file display (using existing `resumeUrl`)
+  - Professional avatar upload and display
+- [ ] **Basic Notes System:** Add internal recruiter notes functionality
+  - Simple text area for recruiter comments
+  - Display notes in candidate detail panel
+  - Store in new `ApplicationNote` model
+- [ ] **Avatar Components:** Replace ShadCN Avatar fallbacks with real profile pictures
+- [ ] **Mobile Optimization:** Ensure the Job Board and Dashboard are responsive using Tailwind
+- [ ] **Navigation Refactor:** Add a Navbar with links to "Browse Jobs," "My Applications," and "Profile"
 
-### Day 7: Integration Testing
-**Goal:** Verify the full candidate-to-recruiter loop.
+### Day 7: Integration Testing & Profile Validation
+**Goal:** Verify the enhanced candidate experience and recruiter tools.
 
-- [ ] Test the full flow: Sign up as Candidate -> Apply for Job -> Log in as Recruiter -> Move to Interview -> Log back in as Candidate -> See updated status.
+- [ ] **Full Candidate Journey:** Sign up -> Complete Profile -> Upload Avatar -> Apply for Job
+- [ ] **Recruiter Workflow:** View enhanced candidate details -> Add notes -> Move through pipeline
+- [ ] **Profile Integration Testing:** Verify all candidate information displays correctly in kanban cards and detail panels
+- [ ] **Notes System Testing:** Ensure recruiter notes save and display properly
+- [ ] **Mobile Profile Testing:** Verify enhanced profiles work seamlessly on mobile devices
 
 ---
 
@@ -60,4 +77,55 @@ Create custom hooks (like `useApplications`) to reuse data-fetching logic across
 - [ ] No "Duplicate Application" attempts reach the server (blocked by frontend + backend).
 - [ ] UI is 100% responsive.
 
-**Next Week Preview:** The Innovation Layer (Vector Search & AI Assistant).
+---
+
+## 🏗️ Schema Updates for Week 5
+
+### Enhanced User Model
+```prisma
+model User {
+  // Existing fields...
+
+  // ADD THESE in Week 5:
+  phoneNumber    String? // Contact information
+  portfolioUrl   String? // External portfolio website
+  avatarUrl      String? // Profile picture
+  companyName    String? // For recruiters
+  companyLogo    String? // Company branding
+
+  // Relations
+  applicationNotes ApplicationNote[] @relation("NoteAuthor")
+}
+
+model Job {
+  // Existing fields...
+
+  // ADD THIS:
+  companyLogo String? // Company branding for job listings
+}
+
+model ApplicationNote {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id])
+
+  authorId      String
+  author        User        @relation("NoteAuthor", fields: [authorId], references: [id])
+
+  content       String      // "Strong technical background..."
+  isInternal    Boolean     @default(true) // Internal recruiter notes
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+// Update Application model
+model Application {
+  // Existing fields...
+
+  // ADD THIS:
+  notes ApplicationNote[]
+}
+```
+
+**Next Week Preview:** Advanced Features (Notifications, Portfolio Management & Real-time Updates).
