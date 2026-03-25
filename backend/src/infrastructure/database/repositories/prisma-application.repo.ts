@@ -1,6 +1,7 @@
 import { PrismaClient, Application, Prisma } from "@prisma/client";
 import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
 import { ApplicationRepository } from "@domain/application/application.repository.js";
+import { ApplicationWithRelations } from "@domain/application/application.types.js";
 
 export class PrismaApplicationRepository
     extends AbstractBaseRepository<
@@ -13,6 +14,8 @@ export class PrismaApplicationRepository
     >
     implements ApplicationRepository 
     {
+        private applicationDelegate: PrismaClient['application'];
+
         constructor(prisma: PrismaClient) {
             super(prisma.application as unknown as BaseDelegate<
                 Application,
@@ -22,6 +25,7 @@ export class PrismaApplicationRepository
                 Prisma.ApplicationWhereInput,
                 Prisma.ApplicationFindUniqueArgs
             >);
+            this.applicationDelegate = prisma.application;
         }
 
     
@@ -31,6 +35,19 @@ export class PrismaApplicationRepository
                 userId_jobId: { userId, jobId } 
             },
         });
+    }
+
+    async findByJobId(jobId: string): Promise<ApplicationWithRelations[]> {
+        return this.applicationDelegate.findMany({
+            where: { jobId },
+            include: {
+                user: true,
+                statusHistory: true
+            },
+            orderBy:{
+                createdAt: 'desc'
+            }
+        })
     }
 
     async getWithHistory(id: string): Promise<Application | null> {

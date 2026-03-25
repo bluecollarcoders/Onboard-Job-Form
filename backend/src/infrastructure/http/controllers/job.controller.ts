@@ -7,8 +7,9 @@ export class JobController {
     constructor(private jobService: JobService) {}
     
      getAllJobs = async  (req: Request, res: Response, next: NextFunction) => {
+
         try {
-            const jobs = await this.jobService.getAllOpenRoles();
+            const jobs = await this.jobService.getAllOpenRoles(req.validatedQuery);
             res.json(jobs);
         } catch (error) {
             next(error);

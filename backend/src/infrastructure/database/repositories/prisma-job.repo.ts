@@ -1,6 +1,7 @@
 import { PrismaClient, Job, Prisma } from "@prisma/client";
 import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
 import { JobRepository } from "@domain/job/job.repository.js";
+import { SearchJobsDTO } from "@my-app/shared";
 
 export class PrismaJobRepository
     extends AbstractBaseRepository<
@@ -24,10 +25,24 @@ export class PrismaJobRepository
             >);
     }
 
-    async findActiveJobs(): Promise<Job[]> {
-        return this.modelDelegate.findMany({
-            where: { isActive: true }
-        });
+    async findActiveJobs(filters?: SearchJobsDTO): Promise<Job[]> {
+        const where: Prisma.JobWhereInput = {
+            isActive: true,
+        };
+
+        if(filters?.q) {
+            where.OR = [
+                {title: {contains: filters.q, mode: 'insensitive'} },
+                {description: {contains: filters.q, mode: 'insensitive'}}
+            ];
+        }
+
+        if(filters?.location) {
+            where.location = { contains: filters?.location, mode: 'insensitive'};
+        }
+
+
+        return this.modelDelegate.findMany({ where });
     }
 
     // Overiding to include relationships.

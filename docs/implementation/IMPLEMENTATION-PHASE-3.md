@@ -10,23 +10,53 @@
 
 ## 📋 Week 3 Checklist
 
-### Days 1-2: Frontend Infrastructure & Public View 🔗
-**Goal:** Establish the React -> Express bridge.
+### Day 1: Complete Backend API Foundation 🔧
+**Goal:** Finish missing Week 2 backend features required for frontend.
 
-- [ ] Implement a `useApi` custom hook or a `services/api.ts` layer to handle base URL and error parsing.
-- [ ] Build the **Public Job Board:**
-  - `JobCard` component.
-  - Search bar that triggers backend `?q=` queries.
-  - Job details modal or page.
-- [ ] Connect the `ContactForm` to the real `POST /api/applications/apply` endpoint.
+- [ ] **Complete Week 2 Backend Requirements:**
+  - Add `updateApplicationStatus` method to ApplicationService with audit trail
+  - Implement `getApplicationsByJob` endpoint for recruiter pipeline view
+  - Add server-side job search with `?q=` query parameter support
+  - Add database indexes for performance (title, location, jobId, status)
+  - Standardize API response formats for consistent frontend consumption
 
-### Days 3-5: The Recruiter Dashboard (MVP Killer) 💼
-**Goal:** Handle complex relational data in the UI.
+### Day 2: Frontend Foundation & Dashboard Overview 🔗
+**Goal:** Establish React architecture with working backend integration.
 
-- [ ] Build the **Job Management View:** A table showing all jobs posted by the recruiter.
-- [ ] Build the **Applicant List View:** When a job is clicked, show all candidates who applied.
-- [ ] Implement **Status Update UI:** Buttons to "Move to Interview" or "Reject" that hit the `PATCH /api/applications/:id/status` hook.
-- [ ] Display the **Application History:** Show the `statusEvents` audit trail for a candidate.
+- [ ] **Frontend Infrastructure:**
+  - Implement `services/api.ts` layer for backend communication
+  - Set up React Query client with proper configuration and error handling
+  - Create basic routing structure (Dashboard, Jobs, Pipeline pages)
+  - Establish ShadCN component patterns and theme configuration
+- [ ] **Dashboard Overview Page:**
+  - Build metric cards (Active Jobs, New Applications, In Pipeline, Hired)
+  - Create activity feed component with real-time recent actions
+  - Implement "My Jobs" sidebar with application counts
+  - Connect to backend APIs with React Query data fetching and loading states
+
+### Day 3: Jobs Management Table 📋
+**Goal:** Master data table patterns and establish CRUD operations.
+
+- [ ] **Jobs Management Table:**
+  - Build sortable/filterable data table using ShadCN Table components
+  - Implement job status indicators (Active, Paused, Closed)
+  - Add application count display for each job
+  - Create "View Pipeline" navigation to kanban board
+
+### Days 4-5: Kanban Pipeline (MVP Killer) 💼
+**Goal:** Build complex drag & drop interactions with optimistic updates.
+
+- [ ] **Day 4 - Static Kanban Board:**
+  - Create 7-column layout (SUBMITTED → HIRED → REJECTED)
+  - Build candidate cards with avatars, names, timestamps
+  - Implement basic candidate detail panel (Sheet component)
+  - Connect to `getApplicationsByJob` API endpoint with React Query
+- [ ] **Day 5 - Interactive Kanban:**
+  - Implement drag & drop functionality between columns using react-dnd or @dnd-kit
+  - Connect status updates to backend `PATCH /api/applications/:id/status` endpoint
+  - Add optimistic updates for status changes with automatic rollback on error
+  - Build comprehensive candidate detail panel with status history timeline
+  - Add quick action buttons (Move to Interview, Schedule Call, Reject, etc.)
 
 ### Day 6: Advanced UX: Skeletons & Boundaries 🎨
 **Goal:** Make the app feel premium.
@@ -226,3 +256,30 @@ Learn how to update the candidate's status in the UI *immediately* before the AP
   Progressive Disclosure:
   Jobs Table → Click → Pipeline View → Click Card → Detail Panel
   (Simple)      (Focused)    (Rich)       (Complete)
+
+---
+
+## 🔧 **Critical Day 1 Tasks Summary**
+
+Before any frontend work can begin, these backend endpoints MUST be completed:
+
+### **Required API Endpoints:**
+- `GET /api/applications/job/:jobId` - Get applications for kanban board
+- `PATCH /api/applications/:id/status` - Update status with audit trail
+- `GET /api/jobs?q=search` - Server-side job search functionality
+
+### **Required Service Methods:**
+```typescript
+ApplicationService.updateApplicationStatus()
+ApplicationService.getApplicationsByJob()
+JobService.searchJobs(query?: string)
+```
+
+### **Required Database Indexes:**
+```prisma
+@@index([jobId, status])    // For kanban queries
+@@index([status, createdAt]) // For dashboard metrics
+@@index([title])            // For job search
+```
+
+**Day 1 Success Metric:** All frontend API calls have working backend endpoints ready for integration.
