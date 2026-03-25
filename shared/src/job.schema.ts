@@ -11,3 +11,10 @@ export const CreateJobSchema = z.object({
 
 // Generate the Type.
 export type CreateJobDTO = z.infer<typeof CreateJobSchema>;
+
+export const SearchJobsSchema = z.object({
+    q: z.string().optional(),
+    location: z.string().optional(),
+});
+
+export type SearchJobsDTO = z.infer<typeof SearchJobsSchema>;

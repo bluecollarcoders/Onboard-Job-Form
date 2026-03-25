@@ -1,15 +1,15 @@
 import { Job, Prisma } from "@prisma/client";
 import { JobRepository } from "@domain/job/job.repository.js";
 import { JobNotFound } from "@errors/application.errors.js";
-import { CreateJobDTO } from "@my-app/shared";
+import { CreateJobDTO, SearchJobsDTO } from "@my-app/shared";
 
 export class JobService {
 
     // Inject the INTERFACE.
     constructor(private jobRepo: JobRepository) {}
 
-    async getAllOpenRoles(): Promise<Job[]> {
-        return this.jobRepo.findActiveJobs();
+    async getAllOpenRoles(filters?: SearchJobsDTO): Promise<Job[]> {
+        return this.jobRepo.findActiveJobs(filters);
     }
 
     async getJobDetails(id: string): Promise<Job | null> {

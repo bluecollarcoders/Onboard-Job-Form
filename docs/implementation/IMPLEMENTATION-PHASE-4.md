@@ -1,90 +1,66 @@
-# 🧠 Week 4: The Intelligent Data Layer (Vector Search)
+# 🔐 Week 4: Authentication & Secure Identity
 
-## 🎯 Mission: Transition from CRUD to Orchestrating Intelligence
+## 🎯 Mission: Secure the Platform and Establish User Ownership
 
 **Duration:** 7 Days (March 30 - April 5, 2026)
-**Focus:** Semantic Search and High-Dimensional Data
-**Success Metric:** A system that understands "meaning" through vector embeddings, not just keywords.
+**Focus:** Implementing JWT-based authentication and transitioning from hardcoded IDs to session-based identity.
+**Success Metric:** A secure login/signup flow where users can only access and modify their own data.
 
 ---
 
 ## 📋 Week 4 Checklist
 
-### Days 1-2: Vector Infrastructure ⚡
-**Goal:** Enable vector capabilities in your stack
+### Days 1-2: Backend Auth Infrastructure 🛡️
+**Goal:** Add security layers to the Express API.
 
-- [ ] Update `docker-compose.yml` to use a `pgvector` enabled image (e.g., `ankane/pgvector:v0.5.0`)
-- [ ] Enable the extension in PostgreSQL (`CREATE EXTENSION vector;`)
-- [ ] Update `schema.prisma` to support the `vector` type using `Unsupported("vector(1536)")`
-- [ ] Research and select an Embedding Model (OpenAI `text-embedding-3-small` or local HuggingFace)
+- [ ] **Database:** Add `password` (hashed) field to the `User` model in `schema.prisma`.
+- [ ] **Service:** Create an `AuthService` for password hashing (using `bcrypt`) and JWT generation.
+- [ ] **Middleware:** Build a `protect` middleware that verifies the JWT and attaches the user to `req.user`.
+- [ ] **Routes:** Implement `POST /api/auth/register` and `POST /api/auth/login`.
 
-### Days 3-4: Embedding Engine
-**Goal:** Transform strings into mathematical "meaning"
+### Days 3-4: Secure Repository Access
+**Goal:** Enforce ownership at the database level.
 
-- [ ] Create an `EmbeddingService` to handle API calls to OpenAI/Anthropic
-- [ ] Implement a logic to generate embeddings for Job Descriptions automatically on creation
-- [ ] Store these embeddings in the new `embedding` column in the `Job` table
-- [ ] Create a "Backfill" script to generate embeddings for existing jobs in the database
+- [ ] Update `JobService` and `ApplicationService` to use the `userId` from the authenticated token instead of the request body.
+- [ ] Implement "Role-Based Access Control" (RBAC):
+  - Ensure only users with role `RECRUITER` can create jobs.
+  - Ensure only the applicant can see their own application details.
 
-### Day 5: Semantic Search Implementation
-**Goal:** Build the "Match Score" logic
+### Day 5: Frontend Auth Pages 🎨
+**Goal:** Build the entry point for users.
 
-- [ ] Write a "Vector Search" repository method using Prisma's `$queryRaw` (since Prisma doesn't natively support vector math yet)
-- [ ] Implement Cosine Similarity search to find jobs matching a user's natural language query
-- [ ] Create a new API endpoint: `GET /api/jobs/search?q="meaningful query"`
+- [ ] Build the **Login Page** and **Sign Up Page** in React.
+- [ ] Implement an `AuthContext` to manage the user's logged-in state globally.
+- [ ] Secure the **Recruiter Dashboard** route so it redirects to `/login` if no token is present.
 
-### Day 6: Hybrid Search Logic 🏎️
-**Goal:** Combine traditional SQL filters with Vector Search
+### Day 6: Secure Data Fetching
+**Goal:** Connect the UI to the secure API.
 
-- [ ] Refactor the search service to allow "Hybrid Queries" (e.g., "Remote jobs for TypeScript devs" -> Filter by `location='Remote'` + Vector match for the rest)
-- [ ] Add metadata filtering to ensure the AI only searches relevant records
+- [ ] Update the frontend API layer to automatically include the `Authorization: Bearer <token>` header in all requests.
+- [ ] Handle "401 Unauthorized" errors by logging the user out and clearing the token.
 
-### Day 7: Validation & Demo
-**Goal:** Prove the "Intelligence" works
+### Day 7: Validation & Security Audit
+**Goal:** Finalize and polish.
 
-- [ ] Test with "Hidden Matches" (queries that don't share keywords but share meaning)
-- [ ] Document the "Search Architecture" in your blog notes
-- [ ] Finalize documentation for Week 4
+- [ ] Add Zod validation for Login/Register payloads.
+- [ ] Audit the API to ensure no "Broken Object Level Authorization" (BOLA) exists.
 
 ---
 
 ## 🎯 Architectural Patterns
 
-**1. The Embedding Pipeline:**
-Data doesn't just "go" into the DB anymore. It passes through a transformation layer: 
-`Request -> Zod Validation -> Embedding Service -> Prisma -> PostgreSQL`.
+**1. JWT (JSON Web Token) Strategy:**
+Understand how to securely store tokens and verify them using middleware.
 
-**2. Raw SQL Bridge:**
-Learn how to use Prisma `$queryRaw` to perform advanced vector math (like `<->` distance operator) that the ORM doesn't yet abstraction. This is a critical "Senior" skill.
-
----
-
-## 🏗️ Technical Stack (Updated)
-
-- **Vector Extension:** `pgvector` (PostgreSQL)
-- **AI Models:** OpenAI API (for embeddings)
-- **Search Engine:** Hybrid (Prisma SQL + Vector Distance)
+**2. RBAC (Role-Based Access Control):**
+Establish a clear hierarchy between `CANDIDATE`, `RECRUITER`, and `ADMIN` to protect business workflows.
 
 ---
 
-## 💪 Success Criteria for Week 4
+## 💪 Success Criteria
 
-### Intelligence
-- [ ] User can search for "Work from home" and find jobs with location "Remote" (Keyword vs Semantic)
-- [ ] System can calculate a "Match Percentage" between a query and a job
+- [ ] A user cannot post a job without being logged in as a Recruiter.
+- [ ] A user cannot view someone else's application history.
+- [ ] Passwords are never stored in plain text (verified in Postgres).
 
-### Performance
-- [ ] Search results return in < 200ms (Understanding vector indexing)
-
-### Portfolio Value
-- [ ] Can explain how high-dimensional vectors represent human language in a database context.
-
----
-
-## 🚀 Ready to Start?
-
-**Your first task:** Update Docker to include `pgvector` and enable it in your DB.
-
-**Coach's expectation:** By the end of this week, you will have moved from a standard developer to an **AI-Native Engineer.** You aren't just storing data; you're storing intent.
-
-**Let's build the future! 🧠🔥**
+**Next Week Preview:** The Candidate Experience (My Applications & Job Details).
