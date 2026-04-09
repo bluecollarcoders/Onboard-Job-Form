@@ -23,7 +23,10 @@ export const DashboardLayout = () => {
 
                     shouldCollapseSidebar ? "w-16" : "w-64"
                 )}>
-                <div className="mb-8 px-2">
+                <div className={cn(
+                    "mb-8 px-2 transition-opacity duration-300",
+                    shouldCollapseSidebar ? "opacity-0 pointer-events-none" : "opacity-100"
+                )}>
                     <span className="text-lg font-bold tracking-tighter text-[var(--color-on-surface)]">
                         Clinical Curator
                     </span>

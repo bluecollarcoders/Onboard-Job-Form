@@ -1,4 +1,4 @@
-import { Application, ApplicationStatus, Job, User, ApplicationStatusEvent } from "@prisma/client";
+import { Application, ApplicationStatus } from "@prisma/client";
 import { ApplicationRepository } from "@domain/application/application.repository.js";
 import { CreateApplicationDTO } from "@domain/application/application.schema.js";
 import { JobRepository } from "@domain/job/job.repository.js"; 
