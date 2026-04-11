@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { DashboardService } from "@services/dashboard.service.js";
+import { DashboardStatsSchema } from "@my-app/shared";
 
 export class DashboardController {
 
@@ -10,7 +11,8 @@ export class DashboardController {
         try {
 
             const dashboardStats = await this.dashboardService.getDashboardStats();
-            res.json(dashboardStats);
+            const validatedStats = DashboardStatsSchema.parse(dashboardStats);
+            res.json(validatedStats);
 
         } catch (error) {
             console.error('Dashboard stats error:', error);

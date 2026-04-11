@@ -1,17 +1,7 @@
 import { ApplicationStatus } from "@prisma/client";
-import { ApplicationStatusCount } from "@domain/application/application.types.js";
 import { JobRepository } from "@domain/job/job.repository.js";
 import { ApplicationRepository } from "@domain/application/application.repository.js";
-
-
-export type DashboardStats = {
-    activeJobs: number,
-    newApps: number,
-    inPipeline: number,
-    hired: number,
-    rejected: number,
-    breakdown?: ApplicationStatusCount[]
-}
+import { DashboardStatsDTO } from '@my-app/shared'
 
 export class DashboardService {
     constructor(
@@ -19,7 +9,7 @@ export class DashboardService {
         private appRepo: ApplicationRepository
     ) {}
 
-    async getDashboardStats(): Promise<DashboardStats> {
+    async getDashboardStats(): Promise<DashboardStatsDTO> {
         const activeJobsCount = await this.jobRepo.countActiveJobs();
         const applicationStats = await this.appRepo.getStatusBreakdown();
 
