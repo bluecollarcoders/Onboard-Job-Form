@@ -34,7 +34,7 @@ app.use(express.json());
 const jobRepo = new PrismaJobRepository(prisma);
 const appRepo = new PrismaApplicationRepository(prisma);
 
-const dashboardService = new DashboardService();
+const dashboardService = new DashboardService(jobRepo, appRepo);
 
 const jobService = new JobService(jobRepo);
 const applicationService = new ApplicationService(appRepo, jobRepo);

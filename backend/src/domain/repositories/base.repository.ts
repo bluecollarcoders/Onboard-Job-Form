@@ -1,4 +1,9 @@
 //  This defines the shape that any Prisma model delegate must follow.
+
+export interface CountArgs<WhereInput> {
+    where?: WhereInput;
+}
+
 export interface BaseDelegate<
     T, 
     CreateInput, 
@@ -14,6 +19,10 @@ export interface BaseDelegate<
     delete(args: {where: UniqueInput }): Promise<T>;
 }
 
+export interface CountDelegate<WhereInput> {
+    count(args?: CountArgs<WhereInput>): Promise<number>;
+}
+
 export abstract class AbstractBaseRepository<
     T,
     CreateInput,
@@ -24,7 +33,7 @@ export abstract class AbstractBaseRepository<
     > {
 
     constructor(
-        protected modelDelegate: BaseDelegate<T, CreateInput, UpdateInput, UniqueInput, WhereInput, FindUniqueArgs>
+        protected modelDelegate: BaseDelegate<T, CreateInput, UpdateInput, UniqueInput, WhereInput, FindUniqueArgs>& CountDelegate<WhereInput>
     ) {}
 
     async findById(id: string): Promise<T | null> {
@@ -50,4 +59,7 @@ export abstract class AbstractBaseRepository<
         return this.modelDelegate.delete({ where: { id } as UniqueInput });
     }
     
+    async count(where?: WhereInput): Promise<number> {
+        return this.modelDelegate.count({ where });
+    }
 }

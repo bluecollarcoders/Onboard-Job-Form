@@ -1,10 +1,9 @@
 import { ApplicationStatus } from "@prisma/client";
-import { prisma } from "@infrastructure/database/prisma.client.js";
+import { ApplicationStatusCount } from "@domain/application/application.types.js";
+import { JobRepository } from "@domain/job/job.repository.js";
+import { ApplicationRepository } from "@domain/application/application.repository.js";
 
-type ApplicationStatusCount = {
-    status: ApplicationStatus;
-    _count: { id: number };
-}
+
 export type DashboardStats = {
     activeJobs: number,
     newApps: number,
@@ -15,20 +14,14 @@ export type DashboardStats = {
 }
 
 export class DashboardService {
+    constructor(
+        private jobRepo: JobRepository,
+        private appRepo: ApplicationRepository
+    ) {}
 
     async getDashboardStats(): Promise<DashboardStats> {
-            const activeJobsCount = await prisma.job.count({
-                where: {
-                    isActive: true
-                }
-            });
-
-            const applicationStats = await prisma.application.groupBy({
-                by: ['status'],
-                _count: {
-                    id: true
-                }
-            });
+        const activeJobsCount = await this.jobRepo.countActiveJobs();
+        const applicationStats = await this.appRepo.getStatusBreakdown();
 
             const count = applicationStats.reduce((acc, s) => {
                 acc[s.status] = s._count.id;
@@ -42,10 +35,10 @@ export class DashboardService {
 
             return {
                 activeJobs: activeJobsCount,
-                newApps: newApps,
-                inPipeline: inPipeline,
-                hired: hired,
-                rejected: rejected,
+                newApps,
+                inPipeline,
+                hired,
+                rejected,
                 breakdown: applicationStats
             }
     }
