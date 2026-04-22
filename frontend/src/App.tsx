@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { JobsPage } from './pages/Jobs'
+import { Overview } from './pages/Overview';
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,7 @@ function App() {
      
      <Route path='/dashboard' element={<DashboardLayout />}>
      <Route index element={<Navigate to="overview" replace />} />
-     <Route path='overview' element={<div>Overview Coming Soone</div>} />
+     <Route path='overview' element={<Overview />} />
      <Route path='jobs' element={<JobsPage /> } />
      <Route path='candidates' element={<div>Kanban Board Coming Soon</div>} />
      </Route>

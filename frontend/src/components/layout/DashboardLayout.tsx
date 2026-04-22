@@ -57,19 +57,11 @@ export const DashboardLayout = () => {
 
             {/* Main Content Area */}
             <main className={cn(
-                "flex-1 min-w-0 transition-all duration-300 ease-in-out",
-                
-                    // Conditional Logic (Clean & Flat)
+                "flex-1 min-w-0",
+
+                    // Mobile: Add bottom padding for the Nav
                     {
-                        // Desktop: Sidebar is expanded
-                        'ml-64': !isMobile && !shouldCollapseSidebar,
-
-                        // Desktop: Sidebar is collapsed
-                        'ml-16': !isMobile && shouldCollapseSidebar,
-
-                        // Mobile: Add bottom padding for the Nav
                         'mb-24': isMobile && shouldShowBottomNav,
-
                     }
                 )}>
 
