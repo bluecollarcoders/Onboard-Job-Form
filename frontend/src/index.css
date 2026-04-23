@@ -5,68 +5,73 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+      /* Clinical Modern Color System - From Stitch */                                                                                                        
+    --color-primary: #0058be;                                                                                                                               
+    --color-primary-container: #2170e4;                                                                                                                     
+    --color-on-primary: #ffffff;                                                                                                                            
+    --color-on-primary-container: #fefcff;                                                                                                                  
+                                                                                                          
+    --color-secondary: #495e8a;
+    --color-secondary-container: #b6ccff;
+    --color-on-secondary: #ffffff;
+    --color-on-secondary-container: #405682;
+
+    --color-tertiary: #924700;
+    --color-tertiary-container: #b75b00;
+    --color-on-tertiary: #ffffff;
+
+    --color-background: #f7f9fb;
+    --color-surface: #f7f9fb;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f2f4f6;
+    --color-surface-container: #eceef0;
+    --color-surface-container-high: #e6e8ea;
+    --color-surface-container-highest: #e0e3e5;
+
+    --color-on-background: #191c1e;
+    --color-on-surface: #191c1e;
+    --color-on-surface-variant: #424754;
+
+    --color-outline: #727785;
+    --color-outline-variant: #c2c6d6;
+
+    --color-error: #ba1a1a;
+    --color-error-container: #ffdad6;
+    --color-on-error: #ffffff;
+
+    /* Layout Variables */
+    --sidebar-width: 16rem;           /* 64 * 0.25rem */
+    --sidebar-collapsed-width: 4rem;  /* 16 * 0.25rem */
+    --header-height: 4rem;            /* 16 * 0.25rem */
+    --bottom-nav-height: 6rem;        /* 24 * 0.25rem */
+
+    /* Effects */
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --backdrop-blur: blur(20px);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  justify-content: center; /* Centers horizontally */
-  align-items: center;     /* Centers vertically */
-  width: 100%;             /* Ensures body takes full width */
-  min-height: 100vh;
-}
-
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background);
+    color: var(--color-on-background);
+    min-height: 100vh;
   }
-  a:hover {
-    color: #747bff;
+
+/* Custom Utility Classes */
+@layer utilities {
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--backdrop-blur));
   }
-  button {
-    background-color: #f9f9f9;
+
+  .ghost-border {
+    border: 1px solid rgb(194 198 214 / 0.15);
   }
 }

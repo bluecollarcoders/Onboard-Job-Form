@@ -1,5 +1,5 @@
 import { PrismaClient, Job, Prisma } from "@prisma/client";
-import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
+import { AbstractBaseRepository, BaseDelegate, CountDelegate } from "@domain/repositories/base.repository.js";
 import { JobRepository } from "@domain/job/job.repository.js";
 import { SearchJobsDTO } from "@my-app/shared";
 
@@ -22,7 +22,7 @@ export class PrismaJobRepository
             Prisma.JobWhereUniqueInput,
             Prisma.JobWhereInput,
             Prisma.JobFindUniqueArgs
-            >);
+            > & CountDelegate<Prisma.JobScalarWhereInput>);
     }
 
     async findActiveJobs(filters?: SearchJobsDTO): Promise<Job[]> {
@@ -43,6 +43,14 @@ export class PrismaJobRepository
 
 
         return this.modelDelegate.findMany({ where });
+    }
+
+    async countActiveJobs(): Promise<number> {
+        return this.modelDelegate.count({
+            where: {
+                isActive: true
+            }
+        });
     }
 
     // Overiding to include relationships.
