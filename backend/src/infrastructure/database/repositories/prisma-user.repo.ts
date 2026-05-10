@@ -1,5 +1,5 @@
 import { PrismaClient, User, Prisma } from "@prisma/client";
-import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
+import { AbstractBaseRepository, BaseDelegate, CountDelegate } from "@domain/repositories/base.repository.js";
 import { UserRepository } from "@domain/user/user.repository.js";
 
 export class PrismaUserRepository 
@@ -23,7 +23,7 @@ export class PrismaUserRepository
         Prisma.UserWhereUniqueInput,
         Prisma.UserWhereInput,
         Prisma.UserFindUniqueArgs
-        >);
+        > & CountDelegate<Prisma.UserWhereInput>);
     }
 
     // Only UNIQUE to Users.

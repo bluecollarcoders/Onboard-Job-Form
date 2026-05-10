@@ -1,4 +1,4 @@
-import { Job, Prisma } from "@prisma/client";
+import { Job } from "@prisma/client";
 import { JobRepository } from "@domain/job/job.repository.js";
 import { JobNotFound } from "@errors/application.errors.js";
 import { CreateJobDTO, SearchJobsDTO } from "@my-app/shared";

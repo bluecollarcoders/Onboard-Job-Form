@@ -9,14 +9,17 @@ import { PrismaApplicationRepository } from "@infrastructure/database/repositori
 // Services
 import { JobService } from "@services/job.service.js";
 import { ApplicationService } from "@services/application.service.js";
+import { DashboardService } from '@services/dashboard.service.js';
 
 // Controllers
 import { JobController } from "@infrastructure/http/controllers/job.controller.js";
 import { ApplicationController } from "@infrastructure/http/controllers/application.controller.js";
+import { DashboardController } from '@infrastructure/http/controllers/dashboard.controller.js';
 
 // Routers
 import { createJobRouter } from "@infrastructure/http/routes/job.routes.js";
 import { createApplicationRouter } from "@infrastructure/http/routes/application.routes.js";
+import { dashboardRouter } from '@infrastructure/http/routes/dashboard.routes.js';
 
 // Middleware
 import { errorHandler } from "@infrastructure/http/middleware/error.middleware.js";
@@ -31,15 +34,19 @@ app.use(express.json());
 const jobRepo = new PrismaJobRepository(prisma);
 const appRepo = new PrismaApplicationRepository(prisma);
 
+const dashboardService = new DashboardService(jobRepo, appRepo);
+
 const jobService = new JobService(jobRepo);
 const applicationService = new ApplicationService(appRepo, jobRepo);
 
 const jobController = new JobController(jobService);
 const applicationController = new ApplicationController(applicationService);
+const dashboardController = new DashboardController(dashboardService);
 
 // 3. Mount Routers.
 app.use('/api/jobs', createJobRouter(jobController));
 app.use('/api/applications', createApplicationRouter(applicationController));
+app.use('/api/dashboard', dashboardRouter(dashboardController));
 
 // 4. Global Error Handler. (MUST BE LAST).
 app.use(errorHandler);

@@ -9,4 +9,6 @@ export interface JobRepository {
     create(data: Prisma.JobCreateInput): Promise<Job>;
     update(id: string, data: Prisma.JobUpdateInput): Promise<Job>;
     delete(id: string): Promise<Job>;
+    countActiveJobs(): Promise<number>;
+    getRecentJobs(days: number): Promise<Job[]>;
 }

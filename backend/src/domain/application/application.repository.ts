@@ -1,5 +1,5 @@
 import { Application, Prisma } from "@prisma/client";
-import { ApplicationWithRelations } from "./application.types.js";
+import { ApplicationWithRelations, ApplicationStatusCount } from "./application.types.js";
 
 export interface ApplicationRepository {
     findById(id: string): Promise<Application | null>;
@@ -10,4 +10,7 @@ export interface ApplicationRepository {
     update(id: string, data: Prisma.ApplicationUpdateInput): Promise<Application>;
     // Custom Method
     getWithHistory(id: string): Promise<Application | null>;
+    getStatusBreakdown(): Promise<ApplicationStatusCount[]>;
+    getRecentApplications(days: number): Promise<ApplicationWithRelations[]>;
+    countApplicationsByJobId(id: string): Promise<number>;
 }

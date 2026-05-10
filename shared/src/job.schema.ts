@@ -18,3 +18,18 @@ export const SearchJobsSchema = z.object({
 });
 
 export type SearchJobsDTO = z.infer<typeof SearchJobsSchema>;
+
+export const JobSchema = z.object({
+    id: z.cuid(),
+    title: z.string(),
+    company: z.string(),
+    location: z.string(),
+    salary: z.string(),
+    description: z.string(),
+    isActive: z.boolean(),
+    postedById: z.cuid(),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime(),
+});
+
+export type Job = z.infer<typeof JobSchema>;

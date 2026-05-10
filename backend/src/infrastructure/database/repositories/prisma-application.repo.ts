@@ -1,7 +1,7 @@
 import { PrismaClient, Application, Prisma } from "@prisma/client";
-import { AbstractBaseRepository, BaseDelegate } from "@domain/repositories/base.repository.js";
+import { AbstractBaseRepository, BaseDelegate, CountDelegate } from "@domain/repositories/base.repository.js";
 import { ApplicationRepository } from "@domain/application/application.repository.js";
-import { ApplicationWithRelations } from "@domain/application/application.types.js";
+import { ApplicationWithRelations, ApplicationStatusCount } from "@domain/application/application.types.js";
 
 export class PrismaApplicationRepository
     extends AbstractBaseRepository<
@@ -24,7 +24,7 @@ export class PrismaApplicationRepository
                 Prisma.ApplicationWhereUniqueInput,
                 Prisma.ApplicationWhereInput,
                 Prisma.ApplicationFindUniqueArgs
-            >);
+            > & CountDelegate<Prisma.ApplicationWhereInput>);
             this.applicationDelegate = prisma.application;
         }
 
@@ -42,6 +42,7 @@ export class PrismaApplicationRepository
             where: { jobId },
             include: {
                 user: true,
+                job: true,
                 statusHistory: true
             },
             orderBy:{
@@ -59,5 +60,48 @@ export class PrismaApplicationRepository
                 user: true
             }
         });
+    }
+
+    async getStatusBreakdown(): Promise<ApplicationStatusCount[]> {
+        const result = await this.applicationDelegate.groupBy({
+            by: ['status'],
+            _count: {
+                id: true
+            }
+        });
+
+        return result.map( item => ({
+            status: item.status,
+            _count: {
+                id: item._count.id
+            }
+        }));
+    }
+
+    async getRecentApplications(days: number): Promise<ApplicationWithRelations[]> {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+
+        return this.applicationDelegate.findMany({
+            where: {
+                createdAt: {
+                    gte: cutoffDate
+                }
+            },
+            include: {
+                user: true,
+                job: true,
+                statusHistory: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+    }
+
+    async countApplicationsByJobId(jobId: string): Promise<number> {
+        return this.applicationDelegate.count({
+            where: { jobId }
+        })
     }
 }
