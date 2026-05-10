@@ -1,7 +1,8 @@
-import { Application, User, ApplicationStatusEvent, ApplicationStatus } from "@prisma/client";
+import { Application, User, ApplicationStatusEvent, ApplicationStatus, Job } from "@prisma/client";
 
 export type ApplicationWithRelations = Application & {
     user: User;
+    job: Job;
     statusHistory: ApplicationStatusEvent[];
 }
 

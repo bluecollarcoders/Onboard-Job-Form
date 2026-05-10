@@ -11,4 +11,6 @@ export interface ApplicationRepository {
     // Custom Method
     getWithHistory(id: string): Promise<Application | null>;
     getStatusBreakdown(): Promise<ApplicationStatusCount[]>;
+    getRecentApplications(days: number): Promise<ApplicationWithRelations[]>;
+    countApplicationsByJobId(id: string): Promise<number>;
 }

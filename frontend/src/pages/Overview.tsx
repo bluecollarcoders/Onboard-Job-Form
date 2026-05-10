@@ -1,17 +1,21 @@
 import { StatCard } from "../components/dashboard/StatsCard";
+import { ActivityCard } from "../components/dashboard/ActivityCard"; 
+import { JobCard } from "../components/dashboard/JobCard";
 import { useDashboardStats } from "../hooks/api/useDashboard";
+
 import {
     TrendingUp,
     Bolt,
     Clock,
     CheckCircle,
-    UserPlus,      
-    FileText,      
-    Users,        
-    MessageCircle, 
-    Plus           
+    UserPlus,
+    FileText,
+    Users,
+    MessageCircle,
+    Plus,
+    Briefcase,
+    Target
 } from 'lucide-react';
-
 
 
 export const Overview = () => {
@@ -25,6 +29,20 @@ export const Overview = () => {
     { statKey: 'hired', value: data?.hired || 0, trend: '+1 week' },
   ] as const;
 
+  const getActivityIcon =(type: string) => {
+    switch (type) {
+      case 'new_application':
+      return UserPlus;
+      case 'new_job':
+      return Briefcase;
+      case 'status_update':
+        return MessageCircle;
+      case 'offer_accepted':
+        return CheckCircle;
+      default:
+        return FileText;
+    }
+  }
 
   return (
     <div className="space-y-10">
@@ -50,61 +68,19 @@ export const Overview = () => {
           </div>
           <div className="bg-[var(--color-surface-container-lowest)] rounded-xl overflow-hidden border border-[var(--color-outline-variant)]/15">
             <div className="divide-y divide-[var(--color-outline-variant)]/10">
-              {/* Activity Item 1 */}
-              <div className="p-6 flex gap-4 hover:bg-[var(--color-surface-container-low)] transition-colors duration-200">
-                <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0">
-                  <UserPlus className="w-5 h-5 text-[var(--color-primary)]" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <p className="text-sm font-semibold text-[var(--color-on-surface)]">New application from <span className="text-[var(--color-primary)] cursor-pointer">Sarah Jenkins</span></p>
-                    <span className="text-[0.6875rem] text-[var(--color-on-surface-variant)]/60 font-medium">14m ago</span>
-                  </div>
-                  <p className="text-[0.8125rem] text-[var(--color-on-surface-variant)] mt-1">Applied for Senior Product Designer role. Top 5% match score.</p>
-                </div>
-              </div>
 
-              {/* Activity Item 2 */}
-              <div className="p-6 flex gap-4 hover:bg-[var(--color-surface-container-low)] transition-colors duration-200">
-                <div className="w-10 h-10 rounded-full bg-[var(--color-tertiary)]/10 flex items-center justify-center shrink-0">
-                  <FileText className="w-5 h-5 text-[var(--color-tertiary)]" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <p className="text-sm font-semibold text-[var(--color-on-surface)]">Status Update: <span className="text-[var(--color-on-surface)]">Michael Wu</span></p>
-                    <span className="text-[0.6875rem] text-[var(--color-on-surface-variant)]/60 font-medium">2h ago</span>
-                  </div>
-                  <p className="text-[0.8125rem] text-[var(--color-on-surface-variant)] mt-1">Moved from <span className="bg-[var(--color-surface-container-high)] px-1.5 py-0.5 rounded text-[0.75rem]">Initial Screening</span> to <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] px-1.5 py-0.5 rounded text-[0.75rem]">Technical Interview</span>.</p>
-                </div>
-              </div>
+            {data?.recentActivity?.map( (activity) => (
+              <ActivityCard
+              key={activity.id}
+              icon={getActivityIcon(activity.type)}
+              message={activity.message}
+              description={activity.description}
+              timestamp={activity.timestamp}
+              personName={activity.personName}
+              variant="primary"
+              />
+            ))}
 
-              {/* Activity Item 3 */}
-              <div className="p-6 flex gap-4 hover:bg-[var(--color-surface-container-low)] transition-colors duration-200">
-                <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <p className="text-sm font-semibold text-[var(--color-on-surface)]">Offer Accepted: <span className="text-[var(--color-primary)]">Elena Rodriguez</span></p>
-                    <span className="text-[0.6875rem] text-[var(--color-on-surface-variant)]/60 font-medium">5h ago</span>
-                  </div>
-                  <p className="text-[0.8125rem] text-[var(--color-on-surface-variant)] mt-1">Elena has signed the offer letter for Clinical Data Scientist.</p>
-                </div>
-              </div>
-
-              {/* Activity Item 4 */}
-              <div className="p-6 flex gap-4 hover:bg-[var(--color-surface-container-low)] transition-colors duration-200">
-                <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0">
-                  <MessageCircle className="w-5 h-5 text-[var(--color-primary)]" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <p className="text-sm font-semibold text-[var(--color-on-surface)]">New internal note from <span className="text-[var(--color-on-surface)]">David Chen</span></p>
-                    <span className="text-[0.6875rem] text-[var(--color-on-surface-variant)]/60 font-medium">Yesterday</span>
-                  </div>
-                  <p className="text-[0.8125rem] text-[var(--color-on-surface-variant)] mt-1 italic">"Sarah showed exceptional technical depth during the initial call. Recommend moving fast."</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -117,77 +93,22 @@ export const Overview = () => {
               <Plus className="w-5 h-5 text-[var(--color-on-surface-variant)]" />
             </button>
           </div>
+
           <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-2 border border-[var(--color-outline-variant)]/15 space-y-1">
             {/* Job Item 1 */}
-            <div className="p-4 rounded-lg hover:bg-[var(--color-surface-container-low)] transition-all duration-200 group cursor-pointer">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)] transition-colors">Clinical Data Scientist</h3>
-                  <p className="text-[0.75rem] text-[var(--color-on-surface-variant)]/70 mt-0.5">San Francisco • Remote</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-lg font-extrabold text-[var(--color-on-surface)]">14</span>
-                  <p className="text-[0.65rem] font-bold text-[var(--color-on-surface-variant)]/50 uppercase tracking-tighter">Apps</p>
-                </div>
-              </div>
-              <div className="mt-4 h-1 w-full bg-[var(--color-surface-container-high)] rounded-full overflow-hidden">
-                <div className="h-full bg-[var(--color-primary)] w-3/4 rounded-full"></div>
-              </div>
-            </div>
-
-            {/* Job Item 2 */}
-            <div className="p-4 rounded-lg hover:bg-[var(--color-surface-container-low)] transition-all duration-200 group cursor-pointer">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)] transition-colors">Senior Product Designer</h3>
-                  <p className="text-[0.75rem] text-[var(--color-on-surface-variant)]/70 mt-0.5">Austin • Hybrid</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-lg font-extrabold text-[var(--color-on-surface)]">8</span>
-                  <p className="text-[0.65rem] font-bold text-[var(--color-on-surface-variant)]/50 uppercase tracking-tighter">Apps</p>
-                </div>
-              </div>
-              <div className="mt-4 h-1 w-full bg-[var(--color-surface-container-high)] rounded-full overflow-hidden">
-                <div className="h-full bg-[var(--color-primary)] w-1/3 rounded-full"></div>
-              </div>
-            </div>
-
-            {/* Job Item 3 */}
-            <div className="p-4 rounded-lg hover:bg-[var(--color-surface-container-low)] transition-all duration-200 group cursor-pointer">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)] transition-colors">Backend Engineer (Rust)</h3>
-                  <p className="text-[0.75rem] text-[var(--color-on-surface-variant)]/70 mt-0.5">London • On-site</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-lg font-extrabold text-[var(--color-on-surface)]">32</span>
-                  <p className="text-[0.65rem] font-bold text-[var(--color-on-surface-variant)]/50 uppercase tracking-tighter">Apps</p>
-                </div>
-              </div>
-              <div className="mt-4 h-1 w-full bg-[var(--color-surface-container-high)] rounded-full overflow-hidden">
-                <div className="h-full bg-[var(--color-primary)] w-1/2 rounded-full"></div>
-              </div>
-            </div>
-
-            {/* Job Item 4 */}
-            <div className="p-4 rounded-lg hover:bg-[var(--color-surface-container-low)] transition-all duration-200 group cursor-pointer">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)] transition-colors">Talent Ops Lead</h3>
-                  <p className="text-[0.75rem] text-[var(--color-on-surface-variant)]/70 mt-0.5">Global • Remote</p>
-                </div>
-                <div className="text-right">
-                  <span className="text-lg font-extrabold text-[var(--color-on-surface)]">5</span>
-                  <p className="text-[0.65rem] font-bold text-[var(--color-on-surface-variant)]/50 uppercase tracking-tighter">Apps</p>
-                </div>
-              </div>
-              <div className="mt-4 h-1 w-full bg-[var(--color-surface-container-high)] rounded-full overflow-hidden">
-                <div className="h-full bg-[var(--color-primary)] w-1/4 rounded-full"></div>
-              </div>
+            {data?.activeJobsList?.map( (job) => (
+              <JobCard 
+              key={job.id}
+              id={job.id}
+              title={job.title}
+              location={job.location}
+              company={job.company}
+              applicationCount={job.applicationCount}
+              />
+              ))}
             </div>
           </div>
         </div>
-      </div>
     </div>
   )
 }

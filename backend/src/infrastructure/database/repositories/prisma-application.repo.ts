@@ -42,6 +42,7 @@ export class PrismaApplicationRepository
             where: { jobId },
             include: {
                 user: true,
+                job: true,
                 statusHistory: true
             },
             orderBy:{
@@ -75,5 +76,32 @@ export class PrismaApplicationRepository
                 id: item._count.id
             }
         }));
+    }
+
+    async getRecentApplications(days: number): Promise<ApplicationWithRelations[]> {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+
+        return this.applicationDelegate.findMany({
+            where: {
+                createdAt: {
+                    gte: cutoffDate
+                }
+            },
+            include: {
+                user: true,
+                job: true,
+                statusHistory: true
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+    }
+
+    async countApplicationsByJobId(jobId: string): Promise<number> {
+        return this.applicationDelegate.count({
+            where: { jobId }
+        })
     }
 }

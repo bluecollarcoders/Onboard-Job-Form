@@ -14,6 +14,8 @@ export class PrismaJobRepository
     >
     implements JobRepository
 {
+    private jobDelegate: PrismaClient['job'];
+
     constructor(prisma: PrismaClient) {
         super(prisma.job as unknown as BaseDelegate<
             Job,
@@ -23,6 +25,7 @@ export class PrismaJobRepository
             Prisma.JobWhereInput,
             Prisma.JobFindUniqueArgs
             > & CountDelegate<Prisma.JobScalarWhereInput>);
+            this.jobDelegate = prisma.job;
     }
 
     async findActiveJobs(filters?: SearchJobsDTO): Promise<Job[]> {
@@ -59,5 +62,29 @@ export class PrismaJobRepository
             where: { id } as Prisma.JobWhereUniqueInput,
             include: { postedBy: true }
         })
+    }
+
+    async getRecentJobs(days: number): Promise<Job[]> {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+
+        const result = await this.jobDelegate.findMany({
+            where: {
+                createdAt: {
+                    gte: cutoffDate
+                }
+            },
+            include: { postedBy: true },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        // Debug logging
+        console.log('📊 getRecentJobs Debug:');
+        console.log('Total jobs found:', result.length);
+        if (result.length > 0) {
+            console.log('First job structure:', JSON.stringify(result[0], null, 2));
+        }
+
+        return result;
     }
 }
